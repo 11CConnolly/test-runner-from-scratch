@@ -1,9 +1,23 @@
 def describe(description, &block)
+  puts description
   block.call
 end
 
+GREEN = "\e[32m"
+RED = "\e[31m"
+RESET = "\e[0m"
+
+
 def it(description, &block)
-  block.call
+  begin
+    $stdout.write "  -#{description}  "
+    block.call
+    puts "#{GREEN}[ok]#{RESET}"
+  rescue Exception => e
+    puts "#{RED}[fail]#{RESET}"
+    puts e
+    puts e.backtrace
+  end
 end
 
 class Object
@@ -22,4 +36,7 @@ class ComparisonAssertion
       raise AssertionError.new("Expected #{expected.inspect} but got #{@actual.inspect}")
     end
   end 
+end
+
+class AssertionError < RuntimeError
 end
